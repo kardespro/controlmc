@@ -3,7 +3,7 @@ import { Rcon } from 'rcon-client';
 
 interface QueryParams {
   host: string;
-  port: number;
+  port: string;
   password: string;
   message: string;
 }
@@ -22,16 +22,21 @@ export default async function handler(
     return res.status(400).json({ status: 400, message: 'Missing parameters' });
   }
 
+  const parsedPort = parseInt(port, 10);
+  if (isNaN(parsedPort)) {
+    return res.status(400).json({ status: 400, message: 'Invalid port number' });
+  }
+
   const rcon = new Rcon({
     host,
-    port,
+    port: parsedPort,
     password,
   });
 
   try {
     await rcon.connect();
-    let d = await rcon.send(message)
-    res.status(200).json({ status: 200, message: d });
+    const response = await rcon.send(message);
+    res.status(200).json({ status: 200, message: response });
   } catch (error: any) {
     res.status(500).json({ status: 500, message: 'An error occurred while connecting' });
   }
