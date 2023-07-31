@@ -21,7 +21,7 @@ const Home: NextPage = () => {
     (async () => {
       let w = window.localStorage.getItem('creds');
       if (w) {
-        let parsed: FormData = JSON.parse(w);
+        let parsed: FormData = JSON.parse(w) ?? {}; // Provide a default value of an empty object {}
         try {
           let data = await axios.get(`/api/checkHost?host=${parsed.host}&password=${parsed.password}&port=${parsed.port}`);
           if (data.data.status === 200) {
@@ -68,7 +68,7 @@ const Home: NextPage = () => {
   const handleSubmitCommand = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let w = window.localStorage.getItem('creds');
-    let parsed: FormData = JSON.parse(w);
+    let parsed: FormData = JSON.parse(w) ?? {}; // Provide a default value of an empty object {}
     try {
       let d = await axios.get(`/api/sendCommand?host=${parsed.host}&port=${parsed.port}&password=${parsed.password}&message=${e.currentTarget.command.value}`);
       setOutput({
@@ -88,7 +88,7 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>ControlMC</title>
-        <meta name="description" content="ControlMC is Minecraft Pocket edition Control panel , connection with rcon protocol" />
+        <meta name="description" content="ControlMC is Minecraft Pocket edition Control panel, connection with rcon protocol" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
