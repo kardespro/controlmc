@@ -20,8 +20,8 @@ const Home: NextPage = () => {
   useEffect(() => {
     (async () => {
       let w = window.localStorage.getItem('creds');
-      if (w) {
-        let parsed: FormData = JSON.parse(w) ?? {}; // Provide a default value of an empty object {}
+      let parsed: FormData = JSON.parse(w ?? '{}');
+      if (parsed.host && parsed.password && parsed.port) {
         try {
           let data = await axios.get(`/api/checkHost?host=${parsed.host}&password=${parsed.password}&port=${parsed.port}`);
           if (data.data.status === 200) {
