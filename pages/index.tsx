@@ -17,27 +17,28 @@ const Home: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [output, setOutput] = useState<{ command: string; message: string }>({ command: '', message: '' });
 
-  useEffect(() => {
+ useEffect(() => {
     (async () => {
       let w = window.localStorage.getItem('creds');
-      let parsed: FormData = JSON.parse(w ?? '{}');
-      if (parsed.host && parsed.password && parsed.port) {
-        try {
-          let data = await axios.get(`/api/checkHost?host=${parsed.host}&password=${parsed.password}&port=${parsed.port}`);
-          if (data.data.status === 200) {
-            setLoading(true);
-            setAuthenticated(true);
-            setTimeout(() => setLoading(false), 3000);
-          } else {
+      if (w !== null) {
+        let parsed: FormData = JSON.parse(w);
+        if (parsed.host && parsed.password && parsed.port) {
+          try {
+            let data = await axios.get(`/api/checkHost?host=${parsed.host}&password=${parsed.password}&port=${parsed.port}`);
+            if (data.data.status === 200) {
+              setLoading(true);
+              setAuthenticated(true);
+              setTimeout(() => setLoading(false), 3000);
+            } else {
+              setAuthenticated(false);
+            }
+          } catch (error) {
             setAuthenticated(false);
           }
-        } catch (error) {
-          setAuthenticated(false);
         }
       }
     })();
   }, []);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
