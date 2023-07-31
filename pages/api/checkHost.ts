@@ -16,15 +16,26 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const { host, port, password } = req.query as QueryParams;
-  if (!host || !port || !password) {
-    return res.status(400).json({ status: 400, message: 'Missing parameters' });
+  const { host, port, password } = req.query;
+  if (typeof host !== 'string' || typeof port !== 'string' || typeof password !== 'string') {
+    return res.status(400).json({ status: 400, message: 'Missing or invalid parameters' });
   }
 
-  const rcon = new Rcon({
+  const parsedPort = parseInt(port, 10);
+  if (isNaN(parsedPort)) {
+    return res.status(400).json({ status: 400, message: 'Invalid port number' });
+  }
+
+  const queryParams: QueryParams = {
     host,
-    port,
+    port: parsedPort,
     password,
+  };
+
+  const rcon = new Rcon({
+    host: queryParams.host,
+    port: queryParams.port,
+    password: queryParams.password,
   });
 
   try {
