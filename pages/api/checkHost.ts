@@ -16,7 +16,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const { host, port, password }: QueryParams = req.query;
+  const { host, port, password } = req.query as QueryParams;
   if (!host || !port || !password) {
     return res.status(400).json({ status: 400, message: 'Missing parameters' });
   }
