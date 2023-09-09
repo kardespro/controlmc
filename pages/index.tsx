@@ -72,11 +72,11 @@ const Home: NextPage = () => {
     e.preventDefault();
     let w = window.localStorage.getItem('creds');
     if (w === null) {
-      return; // If 'creds' is not found in local storage, exit the function
+      return; 
     }
     let parsed: FormData = JSON.parse(w);
     try {
-      let d = await axios.get(`/api/sendCommand?host=${parsed.host}&port=${parsed.port}&password=${parsed.password}&message=${e.currentTarget.command.value}`);
+      let d = await axios.get(`/api/sendMessage?host=${parsed.host}&port=${parsed.port}&password=${parsed.password}&message=${e.currentTarget.command.value}`);
       setOutput({
         command: e.currentTarget.command.value,
         message: d.data.message,
